@@ -15,3 +15,12 @@ class ImageHandler(object):
         Constructor
         '''
         
+    def resize_image(self):
+        
+    def rgb2grey(self, x_dim=400, y_dim=400):
+        
+    def get_noise(self):
+        
+    
+    
+        
