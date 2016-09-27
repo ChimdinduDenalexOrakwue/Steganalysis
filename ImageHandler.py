@@ -50,6 +50,7 @@ class ImageHandler:
         sum = 0 
         return multiplier * sum
     
+    #reads noise from parts of an image
     @staticmethod
     def get_segmented_noise(self, image_name):
         return
