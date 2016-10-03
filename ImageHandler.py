@@ -65,7 +65,7 @@ class ImageHandler:
     
     #reads noise from parts of an image
     @staticmethod
-    def get_segmented_noise(self, image_name):
+    def get_segmented_noise_28(self, image_name):
         return
     
     def get_neural_input(self, classifier = 0, file_name = ""):
