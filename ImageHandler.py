@@ -11,8 +11,9 @@ from astropy.io.votable.validator.result import Result
 
 class ImageHandler:
     
-    def __init__(self, path_name):
+    def __init__(self, path_name, save_path_name):
         self.path_name = path_name
+        self.save_path_name = save_path_name
         self.files = [f for f in listdir(self.path_name) if isfile(join(self.path_name, f))]
         
     def setPath(self, path_name):
@@ -21,6 +22,11 @@ class ImageHandler:
     
     def update_files(self):
         self.files = [f for f in listdir(self.path_name) if isfile(join(self.path_name, f))]
+        
+    def print_files(self):
+        for i in range(0, len(self.files)):
+            print(self.files[i])
+        return
     
     @staticmethod
     def rgb_to_grey_average(self, image_name):
@@ -36,9 +42,11 @@ class ImageHandler:
         return result
     
     @staticmethod
-    def rgb_to_grey_weighted(self, image_name):
+    def rgb_to_grey_weighted(self, image_name, save = False):
         im = Image.open(self.path_name + image_name)
         im = im.convert('L')
+        if (save):
+            im.save(self.save_path_name + image_name)
         return im
     
     @staticmethod
@@ -46,8 +54,13 @@ class ImageHandler:
         im = Image.open(self.path_name + image_name)
         im = im.convert('L')
         pixelArray = np.array(im)
-        multiplier = 1 / (36 * (image_width - 2) * (image_height - 2))
-        sum = 0 
+        mask = np.matrix([[1.0, -2.0, 1.0], [-2.0, 4.0, -2.0], [1.0, -2.0, 1.0]])
+        multiplier = 1.0 / (36.0 * (image_width - 2.0) * (image_height - 2.0))
+        sum = 0.0
+        for i in range(0, image_width):
+            for j in range(0, image_height):
+                new_mask = mask * pixelArray[i, j]
+                sum = sum + (new_mask.sum() ** 2)
         return multiplier * sum
     
     #reads noise from parts of an image
