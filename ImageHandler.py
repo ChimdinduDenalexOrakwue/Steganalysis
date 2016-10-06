@@ -20,6 +20,10 @@ class ImageHandler:
         self.path_name = path_name
         return
     
+    def setSavePath(self, save_path_name):
+        self.save_path_name = save_path_name
+        return
+    
     def update_files(self):
         self.files = [f for f in listdir(self.path_name) if isfile(join(self.path_name, f))]
         
