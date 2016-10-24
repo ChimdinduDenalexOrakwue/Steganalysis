@@ -9,9 +9,22 @@ import numpy as np
 np.random.seed(1337)  # for reproducibility
 
 import os
+<<<<<<< HEAD
 #os.environ["THEANO_FLAGS"] = "device=cpu, force_device=True"
 #os.environ["THEANO_FLAGS"] = "mode=FAST_RUN,device=gpu,floatX=float32"
+=======
+<<<<<<< Updated upstream
+os.environ["THEANO_FLAGS"] = "mode=FAST_RUN,device=gpu0,floatX=float32"
+>>>>>>> origin/master
 os.environ['KERAS_BACKEND'] = "theano"
+=======
+<<<<<<< HEAD
+os.environ["THEANO_FLAGS"] = "mode=FAST_RUN,device=cpu,floatX=float32"
+=======
+os.environ["THEANO_FLAGS"] = "mode=FAST_RUN,device=gpu0,floatX=float32"
+os.environ['KERAS_BACKEND'] = "theano"
+>>>>>>> origin/master
+>>>>>>> Stashed changes
 from keras.datasets import mnist
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
