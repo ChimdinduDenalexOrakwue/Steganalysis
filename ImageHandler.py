@@ -12,7 +12,7 @@ from astropy.io.votable.validator.result import Result
 class ImageHandler:
     
     def __init__(self, path_name, save_path_name):
-        self.path_name = path_name
+        self.path_name = str(path_name)
         self.save_path_name = save_path_name
         self.files = [f for f in listdir(self.path_name) if isfile(join(self.path_name, f))]
         
@@ -47,24 +47,28 @@ class ImageHandler:
     
     @staticmethod
     def rgb_to_grey_weighted(self, image_name, save = False):
-        im = Image.open(self.path_name + image_name)
+        im = Image.open(str(self.path_name + image_name))
         im = im.convert('L')
         if (save):
             im.save(self.save_path_name + image_name)
         return im
     
-    @staticmethod
-    def get_noise_from_greyscale(self, image_name, image_width, image_height):
-        im = Image.open(self.path_name + image_name)
+    def get_noise_from_greyscale(self, image_name = "", image_width = 28, image_height = 28):
+        im = Image.open(image_name)
         im = im.convert('L')
         pixelArray = np.array(im)
         mask = np.matrix([[1.0, -2.0, 1.0], [-2.0, 4.0, -2.0], [1.0, -2.0, 1.0]])
         multiplier = 1.0 / (36.0 * (image_width - 2.0) * (image_height - 2.0))
         sum = 0.0
         for i in range(0, image_width):
+            sum = 0.0
             for j in range(0, image_height):
                 new_mask = mask * pixelArray[i, j]
-                sum = sum + (new_mask.sum() ** 2)
+                #print(new_mask)
+                #print(new_mask.sum())
+                maskval = (4 * (new_mask[0, 0] ** 2)) + (4 * (new_mask[0, 1] ** 2)) + (new_mask[1, 1] ** 2)
+                sum = sum + maskval
+        print("sum = " + str(sum))
         return multiplier * sum
     
     #reads noise from parts of an image
@@ -72,5 +76,10 @@ class ImageHandler:
     def get_segmented_noise_28(self, image_name):
         return
     
-    def get_neural_input(self, classifier = 0, file_name = ""):
-        return
+    def get_neural_input(self, classifier = 0):
+        dataset = np.empty(shape=[0,1])
+        self.update_files()
+        for i in range(0, len(self.files)):
+            noise = self.get_noise_from_greyscale(image_name = self.path_name + "\\" + self.files[i])
+            dataset = np.append(dataset, [[noise]], axis = 0)
+        return dataset
