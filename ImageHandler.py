@@ -8,6 +8,7 @@ import numpy as np
 from os import listdir
 from os.path import isfile, join
 from astropy.io.votable.validator.result import Result
+from pygame import PixelArray
 
 class ImageHandler:
     
@@ -53,24 +54,37 @@ class ImageHandler:
             im.save(self.save_path_name + image_name)
         return im
     
-    def get_noise_from_greyscale(self, image_name = "", image_width = 28, image_height = 28):
+    def get_noise_from_greyscale_noisemap(self, image_name = "", image_width = 28, image_height = 28):
         im = Image.open(image_name)
         im = im.convert('L')
         pixelArray = np.array(im)
-        mask = np.matrix([[1.0, -2.0, 1.0], [-2.0, 4.0, -2.0], [1.0, -2.0, 1.0]])
+        noiseMap = np.zeros((28, 28))
         multiplier = 1.0 / (36.0 * (image_width - 2.0) * (image_height - 2.0))
         sum = 0.0
         for i in range(0, image_width):
             sum = 0.0
             for j in range(0, image_height):
-                new_mask = mask * pixelArray[i, j]
-                #print(new_mask)
-                #print(new_mask.sum())
-                maskval = (4 * (new_mask[0, 0] ** 2)) + (4 * (new_mask[0, 1] ** 2)) + (new_mask[1, 1] ** 2)
-                sum = sum + maskval
+                val = self.apply_mask(i, j, pixelArray)
+                noiseMap[i, j] = val
+                sum = sum + val
         print("sum = " + str(sum))
-        return multiplier * sum
+        return noiseMap
     
+    def apply_mask(self, x, y, image):
+        maskIndex = 0
+        sum = 0
+        mask = [1.0, -2.0, 1.0, -2.0, 4.0, -2.0, 1.0, -2.0, 1.0]
+        for row in range(x - 1, x + 2):
+            for column in range(y - 1, y + 2):
+                if self.in_bounds(row, column, image):
+                    sum = sum + (image[row, column] * mask[maskIndex])
+                    maskIndex = maskIndex + 1
+        return (sum / 9)
+    
+    def in_bounds(self, x, y, image):
+        return (x >= 0 and x < len(image)) and (y >=0 and y<len(image))
+        
+        
     #reads noise from parts of an image
     @staticmethod
     def get_segmented_noise_28(self, image_name):
@@ -83,3 +97,12 @@ class ImageHandler:
             noise = self.get_noise_from_greyscale(image_name = self.path_name + "\\" + self.files[i])
             dataset = np.append(dataset, [[noise]], axis = 0)
         return dataset
+    
+    def get_neural_input_noisemap(self, classifier = 1):
+        dataset = np.empty(shape=[28,28])
+        self.update_files()
+        for i in range(0, len(self.files)):
+            noise = self.get_noise_from_greyscale_noisemap(image_name = self.path_name + "\\" + self.files[i])
+            dataset = np.append(dataset, noise, axis = 0)
+        return dataset
+        
