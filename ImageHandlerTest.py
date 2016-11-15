@@ -10,3 +10,6 @@ if __name__ == '__main__':
     print(handler.files)
     dataset = handler.get_neural_input_noisemap(classifier=1)
     print("\nTest Dataset (Noise Values): \n" + str(dataset[5]))
+    print (len(dataset))
+    print (len(dataset[5]))
+    print (len(dataset[5, 0]))

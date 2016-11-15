@@ -74,6 +74,7 @@ class ImageHandler:
                 noiseMap[i, j] = val
                 sum = sum + val
         print("sum = " + str(sum))
+        print("\n NOISEMAP: " + str(noiseMap) + "\n\n")
         return noiseMap
     
     def apply_mask(self, x, y, image):
@@ -110,11 +111,11 @@ class ImageHandler:
     
     #generate the noise map data set
     def get_neural_input_noisemap(self, classifier = 1):
-        dataset = np.empty(shape=[28,28])
+        dataset = []
         self.update_files()
         for i in range(0, len(self.files)):
             #get noise map and append it to list of noisemap (may be incorrect)
             noise = self.get_noise_from_greyscale_noisemap(image_name = self.path_name + "\\" + self.files[i])
-            dataset = np.append(dataset, noise, axis = 0)
-        return dataset
+            dataset.append(noise.tolist())
+        return np.array(dataset)
         
