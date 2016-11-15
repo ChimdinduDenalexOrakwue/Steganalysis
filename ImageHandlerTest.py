@@ -13,3 +13,4 @@ if __name__ == '__main__':
     print (len(dataset))
     print (len(dataset[5]))
     print (len(dataset[5, 0]))
+    handler.saveDataset(dataset)

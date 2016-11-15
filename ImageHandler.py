@@ -28,6 +28,9 @@ class ImageHandler:
         self.save_path_name = save_path_name
         return
     
+    def saveDataset(self, dataset):
+        np.save(self.save_path_name + "\\dataset", dataset)
+    
     #update the list of files
     def update_files(self):
         self.files = [f for f in listdir(self.path_name) if isfile(join(self.path_name, f))]
