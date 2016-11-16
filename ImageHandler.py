@@ -28,8 +28,8 @@ class ImageHandler:
         self.save_path_name = save_path_name
         return
     
-    def saveDataset(self, dataset):
-        np.save(self.save_path_name + "\\dataset", dataset)
+    def saveDataset(self, name, dataset):
+        np.save(self.save_path_name + "\\" + name, dataset)
     
     #update the list of files
     def update_files(self):
@@ -121,4 +121,13 @@ class ImageHandler:
             noise = self.get_noise_from_greyscale_noisemap(image_name = self.path_name + "\\" + self.files[i])
             dataset.append(noise.tolist())
         return np.array(dataset)
+    
+    def get_dataset_max(self):
+        return
+    
+    def get_dataset_min(self):
+        return
+    
+    def normalize_dataset(self):
+        return
         
