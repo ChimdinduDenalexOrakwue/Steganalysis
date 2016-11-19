@@ -9,6 +9,7 @@ from os import listdir
 from os.path import isfile, join
 from astropy.io.votable.validator.result import Result
 from pygame import PixelArray
+from numpy import int8
 
 class ImageHandler:
     
@@ -17,7 +18,7 @@ class ImageHandler:
         self.path_name = str(path_name)
         self.save_path_name = save_path_name
         self.files = [f for f in listdir(self.path_name) if isfile(join(self.path_name, f))]
-    
+        
     #set path in which the images are contained
     def setPath(self, path_name):
         self.path_name = path_name
@@ -40,6 +41,12 @@ class ImageHandler:
         for i in range(0, len(self.files)):
             print(self.files[i])
         return
+    
+    @staticmethod
+    def get_validation_array(num, length):
+        array = np.zeros(length, dtype = np.uint8)
+        array.fill(num)
+        return array
     
     @staticmethod
     def rgb_to_grey_average(self, image_name):
@@ -76,8 +83,8 @@ class ImageHandler:
                 val = self.apply_mask(i, j, pixelArray)
                 noiseMap[i, j] = val
                 sum = sum + val
-        print("sum = " + str(sum))
-        print("\n NOISEMAP: " + str(noiseMap) + "\n\n")
+        #print("sum = " + str(sum))
+        #print("\n NOISEMAP: " + str(noiseMap) + "\n\n")
         return noiseMap
     
     def apply_mask(self, x, y, image):
